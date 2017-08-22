@@ -1,20 +1,22 @@
 help([[ ]])
 
 local pn = myModuleName()
-local v = myModuleVersion()
-local pv = pn .. "-" .. v
-local base_dir = pathJoin("/opt/software",  pn,  pv)
+local fn = myFileName()
+local full = myModuleFullName()
+
+local loc = fn:find(full,1,true)-2
+local pkg = fn:gsub("modulefiles/(.*).lua", "software/%1")
 
 -- mostly for intel python
 conflict("intel-" .. pn)
 
-local bindir = pathJoin(base_dir, "bin")
-local bin64dir = pathJoin(base_dir, "bin64")
-local libdir = pathJoin(base_dir, "lib")
-local lib64dir = pathJoin(base_dir, "lib64")
-local includedir = pathJoin(base_dir, "include")
-local mandir = pathJoin(base_dir, "share", "man")
-local infodir = pathJoin(base_dir, "share", "info")
+local bindir = pathJoin(pkg, "bin")
+local bin64dir = pathJoin(pkg, "bin64")
+local libdir = pathJoin(pkg, "lib")
+local lib64dir = pathJoin(pkg, "lib64")
+local includedir = pathJoin(pkg, "include")
+local mandir = pathJoin(pkg, "share", "man")
+local infodir = pathJoin(pkg, "share", "info")
 
 if (isDir(bindir)) then prepend_path("PATH", bindir) end
 if (isDir(bin64dir)) then prepend_path("PATH", bin64dir) end

@@ -2,54 +2,48 @@
 
 set -eu
 
-if [[ $# != 1 ]]
-then
-  echo "Missing version argument"
-  exit 1
-fi
+CURDIR="$(pwd)"
+MYDIR="$(cd "$(dirname "$0")" && pwd)"
+MYPARENT="$(dirname "${MYDIR}")"
 
-VER="$1"
+source "${MYDIR}/common.sh"
+
+check_args $@
+
 PN="gcc"
+VER="$1"
+
 P="${PN}-${VER}"
 FILE="${P}.tar.gz"
 DIR="${P}"
-PREFIX="/opt/software/${PN}/${P}"
+PREFIX="${MYPARENT}/software/Core/${PN}/${VER}"
 URL="http://mirrors-usa.go-parts.com/gcc/releases/${P}/${FILE}"
 
-mkdir -p /tmp/bpp4build
-cd /tmp/bpp4build
+# We don't use /tmp since this needs quite a bit of space
+BUILDDIR="$(mktemp -d -p .)"
 
-# Download the file
-if [[ ! -f "${FILE}" ]]
-then
-    wget -O "${FILE}" "${URL}"
-else
-    echo "Using already-downloaded file: ${FILE}"
-fi
+print_info "${P}" "${BUILDDIR}" "${FILE}" "${URL}" "${DIR}" "${PREFIX}"
 
-# Unpack the tarball and change to the directory
-if [[ ! -d "${DIR}" ]]
-then
-    tar -xvf "${FILE}"
-else
-    echo "Using already unpacked directory ${DIR}"
-fi
-
-cd ${DIR}
+cd "${BUILDDIR}"
+download_unpack "${URL}" "${FILE}" "${DIR}"
+cd "${DIR}"
 
 # Download the prerequisites
 bash contrib/download_prerequisites
 
 # Configure
 mkdir build; cd build
-../configure --prefix=${PREFIX} \
+../configure --prefix="${PREFIX}" \
              --disable-multilib \
              --enable-languages=c,c++,fortran
 
 # Build and install
-make -j4
+make -j${PARALLEL}
 make install
 
-cd ../../
-rm -Rf ${DIR}
-rm ${FILE}
+cd "${CURDIR}" 
+rm -Rf "${BUILDDIR}"
+
+# Symlink to the module file
+mkdir -p "${MYPARENT}/modulefiles/Core/${PN}"
+ln -s "../../_generic/${PN}.lua" "${MYPARENT}/modulefiles/Core/${PN}/${VER}.lua"
