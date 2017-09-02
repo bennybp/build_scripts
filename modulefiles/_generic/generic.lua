@@ -21,7 +21,11 @@ local infodir = pathJoin(pkg, "share", "info")
 if (isDir(bindir)) then prepend_path("PATH", bindir) end
 if (isDir(bin64dir)) then prepend_path("PATH", bin64dir) end
 if (isDir(libdir)) then prepend_path("LD_LIBRARY_PATH", libdir) end
+if (isDir(libdir)) then prepend_path("LIBRARY_PATH", libdir) end
 if (isDir(lib64dir)) then prepend_path("LD_LIBRARY_PATH", lib64dir) end
+if (isDir(lib64dir)) then prepend_path("LIBRARY_PATH", lib64dir) end
 if (isDir(includedir)) then prepend_path("CPATH", includedir) end
 if (isDir(mandir)) then prepend_path("MANPATH", mandir) end
 if (isDir(infodir)) then prepend_path("INFOPATH", infodir) end
+
+if (pn == "boost") then setenv("BOOST_ROOT", pkg) end
