@@ -26,17 +26,23 @@ download_unpack http://releases.llvm.org/${VER}/llvm-${VER}.src.tar.xz          
 download_unpack http://releases.llvm.org/${VER}/cfe-${VER}.src.tar.xz                cfe-${VER}.src.tar.xz                cfe-${VER}.src 
 download_unpack http://releases.llvm.org/${VER}/compiler-rt-${VER}.src.tar.xz        compiler-rt-${VER}.src.tar.xz        compiler-rt-${VER}.src.tar.xz
 download_unpack http://releases.llvm.org/${VER}/clang-tools-extra-${VER}.src.tar.xz  clang-tools-extra-${VER}.src.tar.xz  clang-tools-extra-${VER}.src
+download_unpack http://releases.llvm.org/${VER}/libcxx-${VER}.src.tar.xz             libcxx-${VER}.src.tar.xz             libcxx-${VER}.src
+download_unpack http://releases.llvm.org/${VER}/libcxxabi-${VER}.src.tar.xz          libcxxabi-${VER}.src.tar.xz          libcxxabi-${VER}.src
 
 # Move to the proper directories
 mv llvm-${VER}.src               llvm
 mv cfe-${VER}.src                llvm/tools/clang
 mv clang-tools-extra-${VER}.src  llvm/tools/clang/tools/extra
 mv compiler-rt-${VER}.src        llvm/projects/compiler-rt
+mv libcxx-${VER}.src             llvm/projects/libcxx
+mv libcxxabi-${VER}.src          llvm/projects/libcxxabi
 
 # Configure and build
 mkdir build; cd build
 cmake -DCMAKE_INSTALL_PREFIX=${PREFIX} \
       -DCMAKE_BUILD_TYPE=Release \
+      -DLLVM_ENABLE_LIBCXX=ON -DLLVM_ENABLE_LIBCXXABI=ON \
+      -DCLANG_DEFAULT_CXX_STDLIB="libc++" \
       -DLLVM_TARGETS_TO_BUILD="X86" ../llvm
 
 # Build and install
