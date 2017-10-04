@@ -9,7 +9,7 @@ prepend_path("PATH", pathJoin(base_dir, "bin/intel64"))
 prepend_path("LIBRARY_PATH", pathJoin(base_dir, "lib/intel64"))
 prepend_path("LD_LIBRARY_PATH", pathJoin(base_dir, "lib/intel64"))
 prepend_path("MANPATH", pathJoin(base_dir, "man/common"))
-append_path("INTEL_LICENSE_FILE", "opt/intel/licenses")
+append_path("INTEL_LICENSE_FILE", "/opt/intel/licenses")
 prepend_path("NLSPATH", pathJoin(base_dir, "compiler/lib/intel64/locale/%l_%t/%N"))
 
 setenv("MKLROOT", pathJoin(base_dir, "mkl"))
